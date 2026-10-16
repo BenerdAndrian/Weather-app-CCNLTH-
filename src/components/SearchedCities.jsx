@@ -1,34 +1,51 @@
-import { useContext, useEffect, useState } from "react";
-import { DataContext } from "./DataContext";
 import { CityCard } from "./CityCard";
-function SearchedCities({mode}){
-    const {localData,setCityList,cityList}=useContext(DataContext);
-    //take data from locastorage
-    console.log('local: ',localData)
-    const currentTime=(epochTime)=>{
-     const date=new Date(epochTime*1000);
-     const localTime=date.toLocaleDateString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-     return localTime;
-    }
-    const deleteCity=(index)=>{
-      console.log('index: ',index)
-      const updatedList=[...cityList];
-      updatedList.splice(index,1)
-      setCityList(updatedList)
-    }
-    return(
-        <>
-         <ul className="flex flex-col md:h-[calc(31rem+8px)]">
-        
-         {localData.locations && localData.locations.map((location,index)=>(
-           <li>
-           <CityCard mode={mode} deleteCity={()=>deleteCity(index)} icon={location.days[0].icon} address={location.address} currTime={currentTime(location.days[0].datetimeEpoch)} temp={location.days[0].temp}/>
-           </li> 
-         ))}
-         {!localData.locations && <li> <CityCard mode={mode} icon={localData.days[0].icon} address={localData.address} currTime={currentTime(localData.days[0].datetimeEpoch)} temp={localData.days[0].temp}/> </li>}
-         </ul>
-        
-        </>
+import { useWeather } from "../queries/weatherQueries";
+import { useSettings } from "../settings/settings";
+import { formatTemp } from "../utils/unitConverter";
+
+// List of saved cities. Each row runs its own weather query; rows for a
+// city already viewed elsewhere are served from the cache.
+function SearchedCities({ cities, mode, selectedName, onSelect, onDelete }) {
+    return (
+        <ul className="flex flex-col md:h-[calc(31rem+8px)] overflow-y-auto">
+            {cities.map((city) => (
+                <li key={city.id}>
+                    <SavedCityRow
+                        city={city}
+                        mode={mode}
+                        selected={city.name === selectedName}
+                        onSelect={() => onSelect?.(city.name)}
+                        onDelete={() => onDelete?.(city.id)}
+                    />
+                </li>
+            ))}
+        </ul>
     )
 }
-export {SearchedCities}
+
+function SavedCityRow({ city, mode, selected, onSelect, onDelete }) {
+    const { settings } = useSettings();
+    const { data: forecast, isError } = useWeather(city.name);
+    const localTime = forecast
+        ? new Date(forecast.current.datetimeEpoch * 1000).toLocaleTimeString('en-US', {
+            timeZone: forecast.timezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: settings['12FormatTimer'],
+        })
+        : isError ? 'Unavailable' : 'Loading…';
+    return (
+        <CityCard
+            mode={mode}
+            pending={city.pending}
+            selected={selected}
+            onSelect={onSelect}
+            deleteCity={onDelete}
+            icon={forecast?.current.icon ?? 'cloudy'}
+            address={city.address}
+            currTime={localTime}
+            temp={formatTemp(forecast?.current.temp, settings)}
+        />
+    )
+}
+export { SearchedCities }

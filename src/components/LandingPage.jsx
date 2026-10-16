@@ -12,7 +12,7 @@ function LandingPage(){
             <img className="w-15 h-15 mb-5 rotate-10" src={umbrella} alt="umbrella img" />
             <h1 className=" text-[2rem] text-white font-bold">Breeze</h1>
             <p className="text-[rgb(160,160,160)] mb-5">Weather App</p>
-            <button onClick={()=>navigate('/Weather')} className="bg-blue-500 text-white py-1.5 px-3.5 font-bold rounded-2xl cursor-pointer">Get Started</button>
+            <button onClick={()=>navigate('/weather')} className="bg-blue-600 text-white py-1.5 px-3.5 font-bold rounded-2xl cursor-pointer">Get Started</button>
         </main>
         </div>
     )

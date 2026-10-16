@@ -1,35 +1,47 @@
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import umbrella from '../assets/img/umbrella.png'
-import { useState } from 'react';
-function NavbarSection(){
-    const navigate=useNavigate();
-    const [clickedSection,setClickedSection]=useState(0);
-    const toClickSection=(num)=>{
-        setClickedSection(num)
-    }
-    console.log(clickedSection)
-    return(
+
+const WeatherIcon = ({ color }) => (
+    <svg className="w-4 h-4" aria-hidden="true" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="m 9 0 c -2.027344 0.00390625 -3.855469 1.234375 -4.617188 3.113281 c -0.289062 -0.074219 -0.585937 -0.113281 -0.882812 -0.113281 c -1.933594 0 -3.5 1.566406 -3.5 3.5 s 1.566406 3.5 3.5 3.5 h 1.058594 l 0.96875 -4.222656 c 0.101562 -0.453125 0.507812 -0.777344 0.972656 -0.777344 h 3.75 c 0.3125 0 0.609375 0.148438 0.796875 0.394531 c 0.191406 0.25 0.25 0.574219 0.167969 0.875 l -0.769532 2.730469 h 1.554688 c 0.550781 0.003906 0.996094 0.449219 0.996094 1 h 0.503906 c 1.378906 0 2.5 -1.121094 2.5 -2.5 c 0 -1.1875 -0.839844 -2.214844 -2.003906 -2.449219 c 0 -0.015625 0.003906 -0.035156 0.003906 -0.050781 c 0 -2.761719 -2.238281 -5 -5 -5 z m -2.5 6 l -1.375 6 h 2.875 l -1 4 l 5 -6 h -2.875 l 1.125 -4 z m 0 0" fill={color}></path> </svg>
+);
+const CitiesIcon = ({ color }) => (
+    <svg className="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg"> <path d="M18.5094 8.25078C19.0094 8.25078 19.4094 7.85078 19.4094 7.35078V2.70078C19.4094 2.20078 19.0094 1.80078 18.5094 1.80078C18.0094 1.80078 17.6094 2.20078 17.6094 2.70078V7.35078C17.6094 7.84078 18.0194 8.25078 18.5094 8.25078Z" fill={color}></path> <path d="M11.9996 15.75C11.4996 15.75 11.0996 16.15 11.0996 16.65V21.3C11.0996 21.8 11.4996 22.2 11.9996 22.2C12.4996 22.2 12.8996 21.8 12.8996 21.3V16.65C12.8996 16.16 12.4996 15.75 11.9996 15.75Z" fill={color}></path> <path d="M5.48984 8.25078C5.98984 8.25078 6.38984 7.85078 6.38984 7.35078V2.70078C6.38984 2.20078 5.98984 1.80078 5.48984 1.80078C4.98984 1.80078 4.58984 2.20078 4.58984 2.70078V7.35078C4.58984 7.84078 4.98984 8.25078 5.48984 8.25078Z" fill={color}></path> <path d="M7.35047 10.1719H3.63047C3.13047 10.1719 2.73047 10.5719 2.73047 11.0719C2.73047 11.5719 3.13047 11.9719 3.63047 11.9719H4.59047V21.3019C4.59047 21.8019 4.99047 22.2019 5.49047 22.2019C5.99047 22.2019 6.39047 21.8019 6.39047 21.3019V11.9719H7.35047C7.85047 11.9719 8.25047 11.5719 8.25047 11.0719C8.25047 10.5719 7.84047 10.1719 7.35047 10.1719Z" fill={color}></path> <path d="M20.37 10.1719H16.65C16.15 10.1719 15.75 10.5719 15.75 11.0719C15.75 11.5719 16.15 11.9719 16.65 11.9719H17.61V21.3019C17.61 21.8019 18.01 22.2019 18.51 22.2019C19.01 22.2019 19.41 21.8019 19.41 21.3019V11.9719H20.37C20.87 11.9719 21.27 11.5719 21.27 11.0719C21.27 10.5719 20.87 10.1719 20.37 10.1719Z" fill={color}></path> <path d="M13.8602 12.0308H12.9002V2.70078C12.9002 2.20078 12.5002 1.80078 12.0002 1.80078C11.5002 1.80078 11.1002 2.20078 11.1002 2.70078V12.0308H10.1402C9.64023 12.0308 9.24023 12.4308 9.24023 12.9308C9.24023 13.4308 9.64023 13.8308 10.1402 13.8308H13.8602C14.3602 13.8308 14.7602 13.4308 14.7602 12.9308C14.7602 12.4308 14.3602 12.0308 13.8602 12.0308Z" fill={color}></path> </svg>
+);
+const MapIcon = ({ color }) => (
+    <svg className="w-4 h-4" aria-hidden="true" viewBox="0 0 16 16" fill={color} xmlns="http://www.w3.org/2000/svg"> <path d="M4 2L0 1V14L4 15V2Z" fill={color}></path> <path d="M16 2L12 1V14L16 15V2Z" fill={color}></path> <path d="M10 1L6 2V15L10 14V1Z" fill={color}></path> </svg>
+);
+const SettingsIcon = ({ color }) => (
+    <svg className="w-4 h-4" aria-hidden="true" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill={color} d="M600.704 64a32 32 0 0 1 30.464 22.208l35.2 109.376c14.784 7.232 28.928 15.36 42.432 24.512l112.384-24.192a32 32 0 0 1 34.432 15.36L944.32 364.8a32 32 0 0 1-4.032 37.504l-77.12 85.12a357.12 357.12 0 0 1 0 49.024l77.12 85.248a32 32 0 0 1 4.032 37.504l-88.704 153.6a32 32 0 0 1-34.432 15.296L708.8 803.904c-13.44 9.088-27.648 17.28-42.368 24.512l-35.264 109.376A32 32 0 0 1 600.704 960H423.296a32 32 0 0 1-30.464-22.208L357.696 828.48a351.616 351.616 0 0 1-42.56-24.64l-112.32 24.256a32 32 0 0 1-34.432-15.36L79.68 659.2a32 32 0 0 1 4.032-37.504l77.12-85.248a357.12 357.12 0 0 1 0-48.896l-77.12-85.248A32 32 0 0 1 79.68 364.8l88.704-153.6a32 32 0 0 1 34.432-15.296l112.32 24.256c13.568-9.152 27.776-17.408 42.56-24.64l35.2-109.312A32 32 0 0 1 423.232 64H600.64zm-23.424 64H446.72l-36.352 113.088-24.512 11.968a294.113 294.113 0 0 0-34.816 20.096l-22.656 15.36-116.224-25.088-65.28 113.152 79.68 88.192-1.92 27.136a293.12 293.12 0 0 0 0 40.192l1.92 27.136-79.808 88.192 65.344 113.152 116.224-25.024 22.656 15.296a294.113 294.113 0 0 0 34.816 20.096l24.512 11.968L446.72 896h130.688l36.48-113.152 24.448-11.904a288.282 288.282 0 0 0 34.752-20.096l22.592-15.296 116.288 25.024 65.28-113.152-79.744-88.192 1.92-27.136a293.12 293.12 0 0 0 0-40.256l-1.92-27.136 79.808-88.128-65.344-113.152-116.288 24.96-22.592-15.232a287.616 287.616 0 0 0-34.752-20.096l-24.448-11.904L577.344 128zM512 320a192 192 0 1 1 0 384 192 192 0 0 1 0-384zm0 64a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"></path></svg>
+);
+
+const NAV_ITEMS = [
+    { to: '/weather', label: 'Weather', Icon: WeatherIcon },
+    { to: '/cities', label: 'Cities', Icon: CitiesIcon },
+    { to: '/map', label: 'Map', Icon: MapIcon },
+    { to: '/settings', label: 'Settings', Icon: SettingsIcon },
+];
+
+// The active item is derived from the current URL by NavLink, so it stays
+// correct on reload, back/forward and direct links (no extra state).
+function NavbarSection() {
+    return (
         <nav className=" fixed z-50 md:h-full py-3 bottom-0 left-0 w-full flex flex-row md:flex-col items-center gap-7 bg-[rgb(30,40,55)] md:static text-gray-300 md:rounded-3xl px-5">
-            <img className="w-8 h-8 ml-3 rotate-10 md:mt-[2rem]" src={umbrella} alt="icon" />
-            <ul className="flex flex-row w-80 ml-[2rem] justify-between md:flex-col items-center md:h-60 text-[0.7rem] md:mt-5 md:ml-0">
-                 <li onClick={()=>{toClickSection(0),navigate('/Weather')}} className="flex flex-col items-center justify-center cursor-pointer">
-                 <svg className="w-4 h-4" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m 9 0 c -2.027344 0.00390625 -3.855469 1.234375 -4.617188 3.113281 c -0.289062 -0.074219 -0.585937 -0.113281 -0.882812 -0.113281 c -1.933594 0 -3.5 1.566406 -3.5 3.5 s 1.566406 3.5 3.5 3.5 h 1.058594 l 0.96875 -4.222656 c 0.101562 -0.453125 0.507812 -0.777344 0.972656 -0.777344 h 3.75 c 0.3125 0 0.609375 0.148438 0.796875 0.394531 c 0.191406 0.25 0.25 0.574219 0.167969 0.875 l -0.769532 2.730469 h 1.554688 c 0.550781 0.003906 0.996094 0.449219 0.996094 1 h 0.503906 c 1.378906 0 2.5 -1.121094 2.5 -2.5 c 0 -1.1875 -0.839844 -2.214844 -2.003906 -2.449219 c 0 -0.015625 0.003906 -0.035156 0.003906 -0.050781 c 0 -2.761719 -2.238281 -5 -5 -5 z m -2.5 6 l -1.375 6 h 2.875 l -1 4 l 5 -6 h -2.875 l 1.125 -4 z m 0 0" fill={`${clickedSection===0?'white':'grey'}`}></path> </g></svg>
-                <p className={` font-bold ${clickedSection===0 && 'text-white'}`}>Weather</p>
-                </li>
-                <li  onClick={()=>{toClickSection(1),navigate('/cities')}} className="flex flex-col items-center justify-center cursor-pointer">
-               <svg className="w-4 h-4" viewBox="0 0 24 24" fill={`${clickedSection===1?'white':'grey'}`} xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M18.5094 8.25078C19.0094 8.25078 19.4094 7.85078 19.4094 7.35078V2.70078C19.4094 2.20078 19.0094 1.80078 18.5094 1.80078C18.0094 1.80078 17.6094 2.20078 17.6094 2.70078V7.35078C17.6094 7.84078 18.0194 8.25078 18.5094 8.25078Z" fill={`${clickedSection===1?'white':'grey'}`}></path> <path d="M11.9996 15.75C11.4996 15.75 11.0996 16.15 11.0996 16.65V21.3C11.0996 21.8 11.4996 22.2 11.9996 22.2C12.4996 22.2 12.8996 21.8 12.8996 21.3V16.65C12.8996 16.16 12.4996 15.75 11.9996 15.75Z" fill={`${clickedSection===1?'white':'grey'}`}></path> <path d="M5.48984 8.25078C5.98984 8.25078 6.38984 7.85078 6.38984 7.35078V2.70078C6.38984 2.20078 5.98984 1.80078 5.48984 1.80078C4.98984 1.80078 4.58984 2.20078 4.58984 2.70078V7.35078C4.58984 7.84078 4.98984 8.25078 5.48984 8.25078Z" fill={`${clickedSection===1?'white':'grey'}`}></path> <path d="M7.35047 10.1719H3.63047C3.13047 10.1719 2.73047 10.5719 2.73047 11.0719C2.73047 11.5719 3.13047 11.9719 3.63047 11.9719H4.59047V21.3019C4.59047 21.8019 4.99047 22.2019 5.49047 22.2019C5.99047 22.2019 6.39047 21.8019 6.39047 21.3019V11.9719H7.35047C7.85047 11.9719 8.25047 11.5719 8.25047 11.0719C8.25047 10.5719 7.84047 10.1719 7.35047 10.1719Z" fill={`${clickedSection===1?'white':'grey'}`}></path> <path d="M20.37 10.1719H16.65C16.15 10.1719 15.75 10.5719 15.75 11.0719C15.75 11.5719 16.15 11.9719 16.65 11.9719H17.61V21.3019C17.61 21.8019 18.01 22.2019 18.51 22.2019C19.01 22.2019 19.41 21.8019 19.41 21.3019V11.9719H20.37C20.87 11.9719 21.27 11.5719 21.27 11.0719C21.27 10.5719 20.87 10.1719 20.37 10.1719Z" fill={`${clickedSection===1?'white':'grey'}`}></path> <path d="M13.8602 12.0308H12.9002V2.70078C12.9002 2.20078 12.5002 1.80078 12.0002 1.80078C11.5002 1.80078 11.1002 2.20078 11.1002 2.70078V12.0308H10.1402C9.64023 12.0308 9.24023 12.4308 9.24023 12.9308C9.24023 13.4308 9.64023 13.8308 10.1402 13.8308H13.8602C14.3602 13.8308 14.7602 13.4308 14.7602 12.9308C14.7602 12.4308 14.3602 12.0308 13.8602 12.0308Z"  fill={`${clickedSection===1?'white':'grey'}`}></path> </g></svg>
-                <p className={`font-bold ${clickedSection===1 && 'text-white'}`}>Cities</p>
-                </li>
-                <li  onClick={()=>{toClickSection(2),navigate('/map')}} className="flex flex-col items-center justify-center cursor-pointer">
-                <svg className="w-4 h-4" viewBox="0 0 16 16" fill={`${clickedSection===2?'white':'grey'}`} xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 2L0 1V14L4 15V2Z" fill={`${clickedSection===2?'white':'grey'}`}></path> <path d="M16 2L12 1V14L16 15V2Z" fill={`${clickedSection===2?'white':'grey'}`}></path> <path d="M10 1L6 2V15L10 14V1Z"  fill={`${clickedSection===2?'white':'grey'}`}></path> </g></svg>
-                <p className={`font-bold ${clickedSection===2 && 'text-white'}`}>Map</p>
-                </li>
-                <li  onClick={()=>{toClickSection(3),navigate('/settings')}} className="flex flex-col items-center justify-center cursor-pointer">
-               <svg className="w-4 h-4" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path  fill={`${clickedSection===3?'white':'grey'}`} d="M600.704 64a32 32 0 0 1 30.464 22.208l35.2 109.376c14.784 7.232 28.928 15.36 42.432 24.512l112.384-24.192a32 32 0 0 1 34.432 15.36L944.32 364.8a32 32 0 0 1-4.032 37.504l-77.12 85.12a357.12 357.12 0 0 1 0 49.024l77.12 85.248a32 32 0 0 1 4.032 37.504l-88.704 153.6a32 32 0 0 1-34.432 15.296L708.8 803.904c-13.44 9.088-27.648 17.28-42.368 24.512l-35.264 109.376A32 32 0 0 1 600.704 960H423.296a32 32 0 0 1-30.464-22.208L357.696 828.48a351.616 351.616 0 0 1-42.56-24.64l-112.32 24.256a32 32 0 0 1-34.432-15.36L79.68 659.2a32 32 0 0 1 4.032-37.504l77.12-85.248a357.12 357.12 0 0 1 0-48.896l-77.12-85.248A32 32 0 0 1 79.68 364.8l88.704-153.6a32 32 0 0 1 34.432-15.296l112.32 24.256c13.568-9.152 27.776-17.408 42.56-24.64l35.2-109.312A32 32 0 0 1 423.232 64H600.64zm-23.424 64H446.72l-36.352 113.088-24.512 11.968a294.113 294.113 0 0 0-34.816 20.096l-22.656 15.36-116.224-25.088-65.28 113.152 79.68 88.192-1.92 27.136a293.12 293.12 0 0 0 0 40.192l1.92 27.136-79.808 88.192 65.344 113.152 116.224-25.024 22.656 15.296a294.113 294.113 0 0 0 34.816 20.096l24.512 11.968L446.72 896h130.688l36.48-113.152 24.448-11.904a288.282 288.282 0 0 0 34.752-20.096l22.592-15.296 116.288 25.024 65.28-113.152-79.744-88.192 1.92-27.136a293.12 293.12 0 0 0 0-40.256l-1.92-27.136 79.808-88.128-65.344-113.152-116.288 24.96-22.592-15.232a287.616 287.616 0 0 0-34.752-20.096l-24.448-11.904L577.344 128zM512 320a192 192 0 1 1 0 384 192 192 0 0 1 0-384zm0 64a128 128 0 1 0 0 256 128 128 0 0 0 0-256z"></path></g></svg>
-                <p className={`font-bold ${clickedSection===3 && 'text-white'}`}>Settings</p>
-                </li>
+            <img className="w-8 h-8 ml-3 rotate-10 md:mt-[2rem]" src={umbrella} alt="Breeze logo" />
+            <ul className="flex flex-row w-80 ml-[2rem] justify-between md:flex-col items-center md:h-60 text-xs md:mt-5 md:ml-0">
+                {NAV_ITEMS.map(({ to, label, Icon }) => (
+                    <li key={to}>
+                        <NavLink to={to} className="flex flex-col items-center justify-center cursor-pointer">
+                            {({ isActive }) => (
+                                <>
+                                    <Icon color={isActive ? 'white' : 'grey'} />
+                                    <span className={`font-bold ${isActive ? 'text-white' : ''}`}>{label}</span>
+                                </>
+                            )}
+                        </NavLink>
+                    </li>
+                ))}
             </ul>
         </nav>
     )
 }
-export{NavbarSection}
+export { NavbarSection }

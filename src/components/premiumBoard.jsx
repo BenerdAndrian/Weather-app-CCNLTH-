@@ -29,7 +29,7 @@ function SignUp(){
         <p className="text-gray-300">
         Sign up for our daily weather newsletter personalized just for you 
         </p>
-        <button className="font-bold cursor-pointer text-white text-center bg-blue-500 p-2 rounded-2xl w-full mt-3">Sign up</button>
+        <button className="font-bold cursor-pointer text-white text-center bg-blue-600 p-2 rounded-2xl w-full mt-3">Sign up</button>
         </div>
         </>
     )

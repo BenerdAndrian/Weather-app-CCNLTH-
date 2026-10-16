@@ -1,76 +1,64 @@
-function fahrenheitToCelcius(degree){
-    return (((degree-32))*5/9).toFixed(1)
+// The backend always sends metric values: °C, km/h, hPa, km.
+// These pure functions convert them to the unit chosen in Settings.
+
+export const UNIT_OPTIONS = {
+  Temperature: ['Celsius', 'Fahrenheit'],
+  Wind: ['Kmh', 'Ms', 'Mph'],
+  Pressure: ['Hpa', 'Inches', 'Kpa', 'Mmhg'],
+  Distance: ['Kilometers', 'Meters'],
+};
+
+const round = (value, digits = 1) => Number(value.toFixed(digits));
+const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+
+export function convertTemp(celsius, unit) {
+  return unit === 'Fahrenheit' ? round((celsius * 9) / 5 + 32) : round(celsius);
 }
-function celciusToFahrenheit(degree){
-    return ((degree*9/5)+32).toFixed(1)
+
+export function convertWind(kmh, unit) {
+  if (unit === 'Ms') return round(kmh / 3.6);
+  if (unit === 'Mph') return round(kmh / 1.609344);
+  return round(kmh);
 }
-function mphToMs(mph){
-   return (mph*0.44704).toFixed(1);
+
+export function convertPressure(hpa, unit) {
+  if (unit === 'Inches') return round(hpa * 0.02953, 2);
+  if (unit === 'Kpa') return round(hpa / 10);
+  if (unit === 'Mmhg') return round(hpa * 0.750062);
+  return round(hpa);
 }
-function mphToKmh(mph){
-    return (mph*1.60934).toFixed(1);
+
+export function convertDistance(km, unit) {
+  return unit === 'Meters' ? round(km * 1000, 0) : round(km);
 }
-function hpaToInches(hpa){
-    return (hpa*0.02953).toFixed(1);
+
+const SUFFIX = {
+  Celsius: '°C', Fahrenheit: '°F',
+  Kmh: ' km/h', Ms: ' m/s', Mph: ' mph',
+  Hpa: ' hPa', Inches: ' inHg', Kpa: ' kPa', Mmhg: ' mmHg',
+  Kilometers: ' km', Meters: ' m',
+};
+
+const EMPTY = '–';
+
+export function formatTemp(celsius, settings) {
+  return isNumber(celsius) ? `${convertTemp(celsius, settings.Temperature)}°` : EMPTY;
 }
-function hpaToKpa(hpa){
-    return (hpa/10).toFixed(1);
+export function formatWind(kmh, settings) {
+  return isNumber(kmh) ? `${convertWind(kmh, settings.Wind)}${SUFFIX[settings.Wind]}` : EMPTY;
 }
-function hpaToMmhg(hpa){
-    return (hpa*0.75006).toFixed(1);
+export function formatPressure(hpa, settings) {
+  return isNumber(hpa) ? `${convertPressure(hpa, settings.Pressure)}${SUFFIX[settings.Pressure]}` : EMPTY;
 }
-function kmToMs(km){
-    return (km*1000).toFixed(1);
+export function formatDistance(km, settings) {
+  return isNumber(km) ? `${convertDistance(km, settings.Distance)}${SUFFIX[settings.Distance]}` : EMPTY;
 }
-function msToKm(ms){
-    return (ms/1000).toFixed(1);
+
+// "17:32:00" -> "17:32" or "5:32 PM"
+export function formatClock(hhmmss, twelveHour) {
+  if (!hhmmss) return EMPTY;
+  const [h, m] = hhmmss.split(':').map(Number);
+  if (!twelveHour) return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  const suffix = h < 12 ? 'AM' : 'PM';
+  return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${suffix}`;
 }
-function windConverter(value, unit) {
-    switch (unit) {
-        case 'Mph':
-            return value;
-        case 'Kmh':
-            return mphToKmh(value);
-        case 'Ms':
-            return mphToMs(value);
-        default:
-            return 0;
-    }
-}
-function pressureConverter(value,unit){
-    switch(unit){
-        case 'Hpa':
-            return value;
-        case 'Mmhg':
-            return hpaToMmhg(value);
-        case 'Kpa':
-            return hpaToKpa(value);
-        case 'Inches':
-            return hpaToInches(value)
-    }
-}
-function tempConverter(value,unit){
-    switch(unit){
-        case 'Fahrenheit':
-            return celciusToFahrenheit(value);
-        case 'Celcius':
-            return fahrenheitToCelcius(value)
-    }
-}
-function distanceConverter(value,unit){
-    switch(unit){
-        case 'Kilometers':
-            return msToKm(value);
-        case 'Meters':
-            return kmToMs(value)
-    }
-}
-function converter(userSettings,data){
-    console.log('nai: ',data.currentConditions)
-   if(data.locations) return;
-   const windspeed= windConverter(data.currentConditions.windspeed,userSettings.Wind);
-   const temp= tempConverter(data.currentConditions.temp,userSettings.Temperature);
-   const pressure=pressureConverter(data.currentConditions.pressure,userSettings.Pressure);
-   return {windspeed,temp,pressure}
-}
-export {fahrenheitToCelcius,mphToMs,mphToKmh,hpaToInches,hpaToKpa,hpaToMmhg,kmToMs,tempConverter,distanceConverter,pressureConverter,windConverter,converter}
