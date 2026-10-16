@@ -1,0 +1,16 @@
+# Runs the backend API in Docker. The frontend still runs with `npm run dev`
+# (its /api proxy points to http://localhost:3001).
+services:
+  api:
+    build: ./server
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./server/.env
+    environment:
+      DB_PATH: /app/data/weather.db
+    volumes:
+      - api-data:/app/data
+
+volumes:
+  api-data:
