@@ -12,9 +12,11 @@ function InputSection({ onSubmit, placeholder = "Search For A City", disabled = 
         setInputValue('');
     }
     return (
-        <form onSubmit={handleSubmit} role="search">
+        <form onSubmit={handleSubmit} role="search" className="search-form">
+            <label className="search-label" htmlFor="city-search">{placeholder}</label>
             <input
-                className="bg-[rgb(30,40,55)] text-white p-3 rounded-2xl w-full mb-5"
+                className="search-field"
+                id="city-search"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 type="text"
@@ -23,6 +25,7 @@ function InputSection({ onSubmit, placeholder = "Search For A City", disabled = 
                 maxLength={80}
                 disabled={disabled}
             />
+            <button className="search-submit" type="submit" disabled={disabled}>Search</button>
         </form>
     )
 }

@@ -26,14 +26,19 @@ export default function CitiesPage() {
         <>
             {mutationError && <ErrorPage message={mutationError.message} handleStatus={closeError} />}
             {savedCities.isPending && <LoadingPage />}
-            <div className="md:grid pb-[3rem] md:pb-0 md:grid-cols-[1.5fr_1fr] md:grid-rows-[40px_1fr_1fr_1fr] bg-black px-5">
-                <div className="md:col-start-1 md:col-end-2 md:row-start-1 md:row-end-2">
+            <div className="cities-page">
+                <div className="page-heading">
+                    <h1>Cities</h1>
                     <InputSection placeholder="Add a city to your list" onSubmit={(name) => addCity.mutate(name)} />
                 </div>
-                <div className="md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-5 mt-[2rem]">
+                <div className="cities-layout">
+                <section className="cities-list-panel">
                     {savedCities.isError && <QueryError error={savedCities.error} onRetry={() => savedCities.refetch()} />}
                     {savedCities.isSuccess && cities.length === 0 && (
-                        <p className="text-gray-400 text-center mt-10">No saved cities yet. Type a city above to add it.</p>
+                        <div className="empty-state">
+                            <h2>No saved cities yet</h2>
+                            <p>Type a city above to add it.</p>
+                        </div>
                     )}
                     <SearchedCities
                         cities={cities}
@@ -42,18 +47,19 @@ export default function CitiesPage() {
                         onSelect={setSelectedName}
                         onDelete={(id) => deleteCity.mutate(id)}
                     />
-                </div>
-                {selectedWeather.data && (
-                    <div className="md:col-start-2 md:col-end-3 md:row-start-2 row-end-5 md:ml-[2rem]">
-                        <TodayTempMain forecast={selectedWeather.data} />
-                        <div className="mb-4">
+                </section>
+                <aside className="city-preview">
+                    {selected && selectedWeather.isPending && <p className="inline-state" role="status">Loading forecast…</p>}
+                    {selectedWeather.isError && <QueryError error={selectedWeather.error} onRetry={() => selectedWeather.refetch()} />}
+                    {selectedWeather.data && (
+                        <>
+                            <TodayTempMain forecast={selectedWeather.data} />
                             <TodayForecastSection targetHours={['06', '09', '12']} forecast={selectedWeather.data} />
-                            <div className="mt-3">
-                                <SevendayForecastSection numOfDays={3} forecast={selectedWeather.data} />
-                            </div>
-                        </div>
-                    </div>
-                )}
+                            <SevendayForecastSection numOfDays={3} forecast={selectedWeather.data} />
+                        </>
+                    )}
+                </aside>
+                </div>
             </div>
         </>
     )

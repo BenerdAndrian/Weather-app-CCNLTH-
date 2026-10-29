@@ -8,22 +8,32 @@ import { useWeather } from "../queries/weatherQueries"
 import { DEFAULT_CITY } from "../constants"
 
 export default function MapPage() {
-    const { data: cities = [] } = useSavedCities()
+    const savedCities = useSavedCities()
+    const { data: cities = [] } = savedCities
     const addCity = useAddCity()
     const [selectedName, setSelectedName] = useState(null)
     const shownCity = selectedName ?? cities.find((c) => !c.pending)?.name ?? DEFAULT_CITY
-    const { data: forecast } = useWeather(shownCity)
+    const weather = useWeather(shownCity)
+    const { data: forecast } = weather
 
     return (
         <>
             {addCity.isError && <ErrorPage message={addCity.error.message} handleStatus={() => addCity.reset()} />}
-            <div className="bg-black grid gap-5 md:grid-cols-[1.5fr_1fr] md:grid-rows-[40px_1fr]">
-                <div className="md:col-start-1 md:col-end-2 md:row-start-1 md:row-end-3 ml-3 mb-[2rem] pr-3 md:mb-0">
+            <div className="map-page">
+                <div className="page-heading"><h1>Map</h1></div>
+                <div className="map-layout">
+                <section>
                     <InputSection placeholder="Add a city to your list" onSubmit={(name) => { addCity.mutate(name); setSelectedName(name) }} />
+                    {weather.isPending && <p className="inline-state" role="status">Loading forecast…</p>}
+                    {weather.isError && <QueryError error={weather.error} onRetry={() => weather.refetch()} />}
                     <MapComponent forecast={forecast} />
-                </div>
-                <div className="md:block md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
+                </section>
+                <aside className="cities-list-panel">
+                    {savedCities.isPending && <p className="inline-state" role="status">Loading saved cities…</p>}
+                    {savedCities.isError && <QueryError error={savedCities.error} onRetry={() => savedCities.refetch()} />}
+                    {savedCities.isSuccess && cities.length === 0 && <p className="inline-state">No saved cities yet. Type a city above to add it.</p>}
                     <SearchedCities cities={cities} mode='no-trans' selectedName={shownCity} onSelect={setSelectedName} />
+                </aside>
                 </div>
             </div>
         </>

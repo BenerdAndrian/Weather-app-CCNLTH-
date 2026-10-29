@@ -1,0 +1,20 @@
+{
+  "scanned": "2026-10-29",
+  "findings": {
+    "fonts": "No custom font files or declared font stack; selected Outfit and Onest for the redesign, with system fallbacks.",
+    "palette": "Tailwind CSS 4 import only in src/styles/styles.css; no existing role-based color tokens.",
+    "motion": "No motion library; existing UI relies on CSS utilities and a timed loading label.",
+    "spacing": "Tailwind default scale plus arbitrary utility values in component markup.",
+    "framework": "React 19, Vite 6, React Router 7, TanStack Query 5; app screens are composed through src/App.jsx and src/routes.jsx."
+  },
+  "preserve": [
+    "Existing routes and React component responsibilities.",
+    "Weather and saved-city queries, mutations, state, handlers, and displayed facts.",
+    "Breeze wordmark asset, weather icons, and Leaflet map integration."
+  ],
+  "introduce": [
+    "Ultraviolet night color and type tokens.",
+    "Responsive shared app navigation and screen layouts.",
+    "Consistent loading, empty, error, selected, and disabled presentations where existing logic supplies those states."
+  ]
+}

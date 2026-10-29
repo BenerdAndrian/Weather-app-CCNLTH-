@@ -2,12 +2,12 @@ import ButtonToggle from "./ButtonToggle"
 function NotificationBoard({modifySettings,settings}){
     return(
         <>
-        <div>
-            <div className="flex justify-between">
-             <p className="text-white font-bold">Notifications</p>
-             <ButtonToggle category={'notification'} label="Notifications" modifySettings={modifySettings} settings={settings}/>
+        <div className="setting-row">
+            <div className="setting-copy">
+             <strong>Notifications</strong>
+             <span>Be aware of weather</span>
             </div>
-            <p className="text-gray-400">Be aware of weather</p>
+             <ButtonToggle category={'notification'} label="Notifications" modifySettings={modifySettings} settings={settings}/>
         </div>
         </>
     )
@@ -16,17 +16,17 @@ function GeneralSettingBoard({modifySettings,settings}){
     return(
         <>
         <div>
-            <div className="flex justify-between">
-                <p className="text-white font-bold">12-hour time</p>
+            <div className="setting-row">
+                <div className="setting-copy"><strong>12-hour time</strong></div>
                 <ButtonToggle category={'12FormatTimer'} label="12-hour time" modifySettings={modifySettings} settings={settings}/>
             </div>
-            <hr className="border-1 border-gray-700 my-5" />
-            <div>
-                <div className="flex justify-between">
-                    <p className="text-white font-bold">Location</p>
-                    <ButtonToggle category={'getByGPS'} label="Get weather by location" modifySettings={modifySettings} settings={settings}/>
+            <hr className="setting-divider" />
+            <div className="setting-row">
+                <div className="setting-copy">
+                    <strong>Location</strong>
+                    <span>Get weather by location</span>
                 </div>
-                <p className="text-gray-400">Get weather by location</p>
+                    <ButtonToggle category={'getByGPS'} label="Get weather by location" modifySettings={modifySettings} settings={settings}/>
             </div>
         </div>
         </>

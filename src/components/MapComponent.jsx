@@ -24,10 +24,10 @@ function ChangeMapView({ lat, lng }) {
 export default function MapComponent({ forecast }) {
   const position = forecast ? [forecast.latitude, forecast.longitude] : FALLBACK_POSITION;
   return (
-    <MapContainer center={position} zoom={11} style={{ height: '77vh', borderRadius: '1rem' }}>
+      <MapContainer center={position} zoom={11} className="map-canvas">
       <ChangeMapView lat={position[0]} lng={position[1]} />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        attribution={`&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors`}
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {forecast && (

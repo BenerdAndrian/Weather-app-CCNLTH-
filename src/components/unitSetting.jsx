@@ -8,18 +8,18 @@ const UNIT_LABELS = {
 export default function UnitSettingBoard({ unitArr, modifySettings, settings }) {
     return (
         <div>
-            <ul className="flex flex-col gap-5">
+            <ul className="unit-list">
                 {unitArr.map(unit => (
                     <li key={unit.name}>
-                        <p className="font-bold text-gray-400 text-[0.9rem]">{unit.name}</p>
-                        <ul className="flex w-full">
+                        <p className="settings-group-title">{unit.name}</p>
+                        <ul className="unit-choice-list">
                             {unit.units.map(theUnit => (
-                                <li key={theUnit} className='border-r-1 border-r-gray-500 px-2 last:border-r-0 w-full'>
+                                <li key={theUnit}>
                                     <button
                                         type="button"
                                         aria-pressed={settings[unit.name] === theUnit}
                                         onClick={() => modifySettings(unit.name, theUnit)}
-                                        className={`text-center ${settings[unit.name] === theUnit ? 'bg-white text-black' : 'text-gray-400'} w-full rounded-lg cursor-pointer`}
+                                        className="unit-choice"
                                     >
                                         {UNIT_LABELS[theUnit]}
                                     </button>

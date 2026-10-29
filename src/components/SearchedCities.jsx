@@ -7,7 +7,7 @@ import { formatTemp } from "../utils/unitConverter";
 // city already viewed elsewhere are served from the cache.
 function SearchedCities({ cities, mode, selectedName, onSelect, onDelete }) {
     return (
-        <ul className="flex flex-col md:h-[calc(31rem+8px)] overflow-y-auto">
+        <ul className="cities-list">
             {cities.map((city) => (
                 <li key={city.id}>
                     <SavedCityRow
@@ -33,7 +33,7 @@ function SavedCityRow({ city, mode, selected, onSelect, onDelete }) {
             minute: '2-digit',
             hour12: settings['12FormatTimer'],
         })
-        : isError ? 'Unavailable' : 'Loading…';
+        : isError ? 'Unavailable' : 'Loading...';
     return (
         <CityCard
             mode={mode}

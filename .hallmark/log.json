@@ -1,0 +1,24 @@
+[
+ {
+  "date": "2026-10-29",
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "app",
+  "theme": "ultraviolet (night)",
+  "prompt": "A weather app to inspect current conditions, forecasts, saved cities, map and settings",
+  "shape": "app screen",
+  "axes": "dark/geometric-sans/chromatic-violet",
+  "nav": "compact top bar with mobile bottom rail",
+  "signature": "live forecast",
+  "sections": [
+   "landing",
+   "weather",
+   "air conditions",
+   "cities",
+   "map",
+   "settings"
+  ],
+  "entry": "/weather/Hanoi",
+  "fingerprint": "app:night-forecast-cities-map-settings"
+ }
+]

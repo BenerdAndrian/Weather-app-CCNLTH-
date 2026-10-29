@@ -25,12 +25,15 @@ const NAV_ITEMS = [
 // correct on reload, back/forward and direct links (no extra state).
 function NavbarSection() {
     return (
-        <nav className=" fixed z-50 md:h-full py-3 bottom-0 left-0 w-full flex flex-row md:flex-col items-center gap-7 bg-[rgb(30,40,55)] md:static text-gray-300 md:rounded-3xl px-5">
-            <img className="w-8 h-8 ml-3 rotate-10 md:mt-[2rem]" src={umbrella} alt="Breeze logo" />
-            <ul className="flex flex-row w-80 ml-[2rem] justify-between md:flex-col items-center md:h-60 text-xs md:mt-5 md:ml-0">
+        <nav className="site-nav" aria-label="Main navigation">
+            <a className="brand" href="/" aria-label="Breeze home">
+                <img src={umbrella} alt="" />
+                <span>Breeze</span>
+            </a>
+            <ul className="nav-links">
                 {NAV_ITEMS.map(({ to, label, Icon }) => (
                     <li key={to}>
-                        <NavLink to={to} className="flex flex-col items-center justify-center cursor-pointer">
+                        <NavLink to={to} className="nav-link">
                             {({ isActive }) => (
                                 <>
                                     <Icon color={isActive ? 'white' : 'grey'} />

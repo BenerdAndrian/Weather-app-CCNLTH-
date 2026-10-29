@@ -32,28 +32,29 @@ export default function WeatherSection() {
   const { data: forecast, isPending, isError, error, isFetching, refetch } = useWeather(city);
 
   return (
-    <>
+    <div className="weather-page">
       {isPending && <LoadingPage />}
-      <div className="md:grid md:grid-cols-[1.5fr_1fr] md:grid-rows-[40px_1fr_1fr_1fr] pb-[4rem] md:pb-0 bg-black gap-4 px-5">
-        <div className="md:col-start-1 md:col-end-2 md:row-start-1 md:row-end-5">
-          <InputSection onSubmit={(name) => navigate(`/weather/${encodeURIComponent(name)}`)} />
-          {isError && <QueryError error={error} onRetry={() => refetch()} />}
-          {forecast && (
-            <>
-              <div className="md:ml-[3rem]">
-                <TodayTempMain forecast={forecast} refreshing={isFetching && !isPending} />
-                <SaveCityButton city={city} />
-              </div>
-              <TodayForecastSection forecast={forecast} targetHours={TARGET_HOURS} />
-              <AirConditionSection forecast={forecast} mode={'board'} />
-            </>
-          )}
-        </div>
-        <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-5">
-          {forecast && <SevendayForecastSection forecast={forecast} numOfDays={7} />}
-        </div>
+      <div className="page-heading weather-heading">
+        <h1>Weather</h1>
+        <InputSection onSubmit={(name) => navigate(`/weather/${encodeURIComponent(name)}`)} />
       </div>
-    </>
+      {isError && <QueryError error={error} onRetry={() => refetch()} />}
+      {forecast && (
+        <div className="weather-grid">
+          <div className="weather-main-column">
+            <section>
+              <TodayTempMain forecast={forecast} refreshing={isFetching && !isPending} />
+              <SaveCityButton city={city} />
+            </section>
+            <TodayForecastSection forecast={forecast} targetHours={TARGET_HOURS} />
+            <AirConditionSection forecast={forecast} mode={'board'} />
+          </div>
+          <aside className="weather-side-column">
+            <SevendayForecastSection forecast={forecast} numOfDays={7} />
+          </aside>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -70,9 +71,9 @@ function SaveCityButton({ city }) {
       <button
         onClick={() => addCity.mutate(city)}
         disabled={isSaved || addCity.isPending}
-        className="mt-2 text-[0.8rem] font-bold rounded-full px-3 py-1 cursor-pointer bg-blue-600 text-white disabled:bg-gray-700 disabled:text-gray-300 disabled:cursor-default"
+        className="save-city"
       >
-        {isSaved ? 'Saved ✓' : addCity.isPending ? 'Saving…' : '+ Save city'}
+        {isSaved ? 'Saved' : addCity.isPending ? 'Saving...' : '+ Save city'}
       </button>
     </>
   )
@@ -83,18 +84,18 @@ function TodayTempMain({ forecast, refreshing = false }) {
   const { settings } = useSettings();
   if (!forecast) return null;
   return (
-    <div className="grid grid-cols-2 bg-black">
-      <div className="grid grid-rows-2">
+    <div className="current-conditions">
+      <div className="current-copy">
         <div>
-          <p className="font-bold text-white text-[1.5rem]">
+          <h2>
             {forecast.resolvedAddress}
             <RefreshingBadge show={refreshing} />
-          </p>
-          <p className="text-gray-400">Chance Of Rain: {forecast.current.precipprob ?? 0}%</p>
+          </h2>
+          <p className="current-meta">Chance Of Rain: {forecast.current.precipprob ?? 0}%</p>
         </div>
-        <p className="font-bold text-white text-[1.6rem] mt-5">{formatTemp(forecast.current.temp, settings)}</p>
+        <p className="current-temp">{formatTemp(forecast.current.temp, settings)}</p>
       </div>
-      <img className="w-25 h-25 md:w-30 md:h-30 ml-[2rem] md:ml-[4rem]" src={`/${forecast.current.icon}.png`} alt={forecast.current.icon} />
+      <img className="current-icon" src={`/${forecast.current.icon}.png`} alt={forecast.current.icon} />
     </div>
   )
 }
@@ -106,18 +107,18 @@ function TodayForecastSection({ targetHours = [], forecast }) {
   // datetime has the format "06:00:00", so compare the first two characters
   const hours = forecast.days[0].hours.filter((hour) => targetHours.includes(hour.datetime.split(':')[0]));
   return (
-    <div className="bg-[rgb(30,40,55)] rounded-2xl pt-3 mt-3 px-3 pb-5">
-      <h2 className="text-[lightgray] font-bold ml-[2rem] text-[0.7rem]">TODAY'S FORECAST</h2>
-      <ul className="grid grid-cols-3 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))] p-2">
+    <section className="surface">
+      <div className="surface-heading"><h2>Today’s forecast</h2></div>
+      <ul className="hour-list">
         {hours.map((hour) => (
-          <li key={hour.datetime} className="flex flex-col items-center justify-center border-r-1 border-r-gray-300 last:border-r-0 text-[0.6rem]">
-            <p className="text-[lightgray] mb-2 text-[0.8rem]">{formatClock(hour.datetime, settings['12FormatTimer'])}</p>
-            <img className="w-8 h-8" src={`/${hour.icon}.png`} alt={hour.icon} />
-            <p className="font-bold text-white mt-2 pb-2 text-[0.95rem]">{formatTemp(hour.temp, settings)}</p>
+          <li key={hour.datetime} className="hour-item">
+            <p>{formatClock(hour.datetime, settings['12FormatTimer'])}</p>
+            <img src={`/${hour.icon}.png`} alt={hour.icon} />
+            <strong>{formatTemp(hour.temp, settings)}</strong>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }
 
@@ -156,23 +157,23 @@ function SevendayForecastSection({ forecast, numOfDays = 0 }) {
   // icon names use hyphens ("partly-cloudy-day"); show them with spaces
   const discardHyphen = (string) => string.replace(/-/g, ' ');
   return (
-    <div className="mt-[1rem] h-full md:mt-0 bg-[rgb(30,40,55)] rounded-2xl pt-4 px-[2rem]">
-      <h2 className="text-[lightgray] font-bold text-[0.7rem]">{numOfDays}-DAY FORECAST</h2>
-      <ul className="flex flex-col justify-between gap-3 mt-2 h-full">
+    <section className="surface">
+      <div className="surface-heading"><h2>{numOfDays}-day forecast</h2></div>
+      <ul className="day-list">
         {days.map((day) => (
-          <li key={day.datetime} className="flex py-3 justify-between items-center border-b-1 border-b-[rgb(60,60,80)] last:border-b-0 last:pb-8 -mt-[1rem] h-full">
-            <p className="text-[lightgray] text-[0.7rem] font-bold w-8">{extractWeekDay(day.datetime)}</p>
-            <div className="flex items-center h-[2.5rem]">
-              <img className="w-8 h-8 mr-2" src={`/${day.icon}.png`} alt="" />
-              <p className="text-white font-bold text-[0.8rem] w-10">{discardHyphen(day.icon)}</p>
+          <li key={day.datetime} className="day-item">
+            <p className="day-name">{extractWeekDay(day.datetime)}</p>
+            <div className="day-condition">
+              <img src={`/${day.icon}.png`} alt="" />
+              <p>{discardHyphen(day.icon)}</p>
             </div>
-            <p className="text-white text-[0.7rem] font-bold">
+            <p className="day-temp">
               {formatTemp(day.tempmax, settings)} / {formatTemp(day.tempmin, settings)}
             </p>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   )
 }
 export { TodayForecastSection, TodayTempMain, AirConditionSection, SevendayForecastSection }
