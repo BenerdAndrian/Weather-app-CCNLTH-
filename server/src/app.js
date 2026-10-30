@@ -2,11 +2,18 @@ import cors from 'cors';
 import express from 'express';
 import { HttpError } from './errors.js';
 import { createCitiesService } from './services/citiesService.js';
-import { parseCityName, parseId } from './validation.js';
+import { createCitySuggestionService } from './services/citySuggestionService.js';
+import { parseCityName, parseId, parseSuggestionQuery } from './validation.js';
 
 // Builds the Express app. Dependencies are passed in so tests can use an
 // in-memory database and a fake weather service.
-export function createApp({ db, weatherService, corsOrigins = [], logger = console }) {
+export function createApp({
+  db,
+  weatherService,
+  citySuggestionService = createCitySuggestionService(),
+  corsOrigins = [],
+  logger = console,
+}) {
   const cities = createCitiesService({ db, weatherService });
   const app = express();
 
@@ -35,6 +42,12 @@ export function createApp({ db, weatherService, corsOrigins = [], logger = conso
 
   app.get('/api/cities', (req, res) => {
     res.json(cities.list());
+  });
+
+  app.get('/api/cities/suggestions', async (req, res) => {
+    const query = parseSuggestionQuery(req.query.q);
+    if (query.length < 2) return res.json([]);
+    res.json(await citySuggestionService.suggest(query));
   });
 
   app.post('/api/cities', async (req, res) => {

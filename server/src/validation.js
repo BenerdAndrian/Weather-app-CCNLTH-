@@ -20,6 +20,17 @@ export function parseCityName(value) {
   return name;
 }
 
+export function parseSuggestionQuery(value) {
+  if (typeof value !== 'string') {
+    throw new HttpError(400, 'INVALID_QUERY', 'Search query is required.');
+  }
+  const query = value.trim().replace(/\s+/g, ' ');
+  if (query.length > 80) {
+    throw new HttpError(400, 'INVALID_QUERY', 'Search query must be 80 characters or fewer.');
+  }
+  return query;
+}
+
 export function parseId(value) {
   const id = Number(value);
   if (!Number.isInteger(id) || id <= 0) {

@@ -2,6 +2,7 @@ import { createApp } from './app.js';
 import { loadConfig } from './config.js';
 import { openDatabase } from './db.js';
 import { createWeatherService } from './services/weatherService.js';
+import { createCitySuggestionService } from './services/citySuggestionService.js';
 
 const config = loadConfig();
 if (!config.weatherApiKey) {
@@ -10,7 +11,8 @@ if (!config.weatherApiKey) {
 
 const db = openDatabase(config.dbPath);
 const weatherService = createWeatherService({ apiKey: config.weatherApiKey });
-const app = createApp({ db, weatherService, corsOrigins: config.corsOrigins });
+const citySuggestionService = createCitySuggestionService();
+const app = createApp({ db, weatherService, citySuggestionService, corsOrigins: config.corsOrigins });
 
 app.listen(config.port, () => {
   console.info(`API listening on http://localhost:${config.port}`);

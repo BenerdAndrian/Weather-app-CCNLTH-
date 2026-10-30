@@ -23,7 +23,7 @@ export default function MapPage() {
                 <div className="page-heading"><h1>Map</h1></div>
                 <div className="map-layout">
                 <section>
-                    <InputSection placeholder="Add a city to your list" onSubmit={(name) => { addCity.mutate(name); setSelectedName(name) }} />
+                    <InputSection placeholder="Add a city to your list" savedCities={cities} onSubmit={(name) => { addCity.mutate(name); setSelectedName(name) }} />
                     {weather.isPending && <p className="inline-state" role="status">Loading forecast…</p>}
                     {weather.isError && <QueryError error={weather.error} onRetry={() => weather.refetch()} />}
                     <MapComponent forecast={forecast} />

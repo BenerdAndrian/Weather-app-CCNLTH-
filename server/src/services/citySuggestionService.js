@@ -30,8 +30,12 @@ export function createCitySuggestionService({ fetchImpl = fetch, timeoutMs = 8_0
       throw new HttpError(502, 'CITY_SEARCH_ERROR', 'City search provider returned invalid data.');
     }
 
+    if (!body || typeof body !== 'object' || (body.results !== undefined && !Array.isArray(body.results))) {
+      throw new HttpError(502, 'CITY_SEARCH_ERROR', 'City search provider returned invalid data.');
+    }
+
     return (body.results ?? [])
-      .filter((place) => place.country_code === 'VN')
+      .filter((place) => place && typeof place.name === 'string' && place.country_code === 'VN')
       .map((place) => {
         const displayParts = [place.name, place.admin1, place.country]
           .filter(Boolean)

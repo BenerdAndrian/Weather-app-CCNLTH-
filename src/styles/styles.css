@@ -25,6 +25,13 @@ h1, h2, h3 { text-transform: lowercase; }
 .weather-page, .cities-page, .map-page, .settings-page, .air-page { min-width: 0; }
 .weather-heading { align-items: center; }
 .search-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-xs); width: min(100%, 440px); }
+.city-search { position: relative; width: min(100%, 440px); }
+.city-search .search-form { width: 100%; }
+.suggestions-panel { position: absolute; z-index: 20; top: calc(100% + 8px); left: 0; display: grid; gap: 2px; width: 100%; max-height: 320px; overflow-y: auto; padding: var(--space-xs); border: 1px solid var(--color-rule-2); border-radius: 14px; background: var(--color-paper-2); box-shadow: 0 12px 32px rgb(0 0 0 / 28%); }
+.suggestions-heading, .suggestions-message { margin: 0; padding: var(--space-xs) var(--space-sm); color: var(--color-muted); font: 500 var(--text-xs)/1.4 var(--font-display); }
+.suggestion-option { display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm); width: 100%; padding: var(--space-sm); border: 0; border-radius: 8px; background: transparent; color: var(--color-ink); text-align: left; cursor: pointer; }
+.suggestion-option:hover, .suggestion-option:focus-visible { outline: none; background: var(--color-paper-3); }
+.suggestion-option small { flex: 0 0 auto; color: var(--color-muted); font: 400 var(--text-xs)/1.2 var(--font-body); }
 .search-label { grid-column: 1 / -1; color: var(--color-muted); font-size: var(--text-xs); text-transform: lowercase; }
 .search-field { width: 100%; min-width: 0; height: 44px; padding: 0 var(--space-md); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); outline: 2px solid transparent; outline-offset: -3px; background: var(--color-paper-2); color: var(--color-ink); font: 400 var(--text-md)/1 var(--font-body); text-transform: lowercase; transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out); }
 .search-field::placeholder { color: var(--color-muted); }

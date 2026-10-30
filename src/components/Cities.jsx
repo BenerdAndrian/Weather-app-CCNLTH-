@@ -29,7 +29,7 @@ export default function CitiesPage() {
             <div className="cities-page">
                 <div className="page-heading">
                     <h1>Cities</h1>
-                    <InputSection placeholder="Add a city to your list" onSubmit={(name) => addCity.mutate(name)} />
+                    <InputSection placeholder="Add a city to your list" savedCities={cities} onSubmit={(name) => addCity.mutate(name)} />
                 </div>
                 <div className="cities-layout">
                 <section className="cities-list-panel">

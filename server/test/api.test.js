@@ -1,4 +1,4 @@
-import request from 'supertest';
+import { once } from 'node:events';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
 import { openDatabase } from '../src/db.js';
@@ -14,13 +14,57 @@ const fakeWeatherService = {
     return { address: city, resolvedAddress: `${city}, Testland`, current: { temp: 20 }, days: [] };
   },
 };
+const fakeCitySuggestionService = {
+  suggest: async (query) => [{ id: 1, name: query, displayName: `${query}, Vietnam` }],
+};
 const silentLogger = { info() {}, error() {} };
+
+// Small native HTTP test client keeps API tests runnable without a separate
+// HTTP assertion library. Each request gets an isolated ephemeral server.
+function request(app) {
+  return Object.fromEntries(['get', 'post', 'delete'].map((method) => [method, (path) => {
+    const headers = {};
+    let body;
+    const operation = {
+      set(name, value) { headers[name] = value; return operation; },
+      send(value) {
+        body = typeof value === 'string' ? value : JSON.stringify(value);
+        if (typeof value !== 'string' && !Object.keys(headers).some((key) => key.toLowerCase() === 'content-type')) {
+          headers['Content-Type'] = 'application/json';
+        }
+        return operation;
+      },
+      then(resolve, reject) { return perform().then(resolve, reject); },
+    };
+    async function perform() {
+      const server = app.listen(0);
+      await once(server, 'listening');
+      try {
+        const response = await fetch(`http://127.0.0.1:${server.address().port}${path}`, {
+          method: method.toUpperCase(), headers, ...(body === undefined ? {} : { body }),
+        });
+        const responseText = await response.text();
+        let responseBody = null;
+        try { responseBody = responseText ? JSON.parse(responseText) : null; } catch { responseBody = responseText; }
+        return {
+          status: response.status,
+          body: responseBody,
+          headers: Object.fromEntries(response.headers.entries()),
+        };
+      } finally {
+        await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+      }
+    }
+    return operation;
+  }]));
+}
 
 let app;
 beforeEach(() => {
   app = createApp({
     db: openDatabase(':memory:'),
     weatherService: fakeWeatherService,
+    citySuggestionService: fakeCitySuggestionService,
     corsOrigins: ['http://localhost:5173'],
     logger: silentLogger,
   });
@@ -104,6 +148,25 @@ describe('saved cities', () => {
   it('returns 404 when deleting a missing city and 400 for a bad id', async () => {
     expect((await request(app).delete('/api/cities/999')).status).toBe(404);
     expect((await request(app).delete('/api/cities/abc')).status).toBe(400);
+  });
+});
+
+describe('GET /api/cities/suggestions', () => {
+  it('normalizes the query and returns Vietnamese place suggestions', async () => {
+    const res = await request(app).get('/api/cities/suggestions?q=%20Da%20%20Nang%20');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ id: 1, name: 'Da Nang', displayName: 'Da Nang, Vietnam' }]);
+  });
+
+  it('returns an empty list for queries shorter than two characters', async () => {
+    const res = await request(app).get('/api/cities/suggestions?q=H');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
+
+  it('rejects missing and overlong queries', async () => {
+    expect((await request(app).get('/api/cities/suggestions')).status).toBe(400);
+    expect((await request(app).get(`/api/cities/suggestions?q=${'a'.repeat(81)}`)).body.error.code).toBe('INVALID_QUERY');
   });
 });
 

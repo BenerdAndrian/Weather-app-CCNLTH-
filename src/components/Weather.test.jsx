@@ -64,7 +64,7 @@ describe('Weather page', () => {
     renderRoute(routes, '/weather/Hue');
 
     fireEvent.click(await screen.findByText('+ Save city'));
-    expect(await screen.findByText('Saved ✓')).toBeTruthy();
+    expect(await screen.findByText('Saved')).toBeTruthy();
     const post = fetchMock.mock.calls.find(([, opts = {}]) => opts.method === 'POST');
     expect(JSON.parse(post[1].body)).toEqual({ name: 'Hue' });
   });

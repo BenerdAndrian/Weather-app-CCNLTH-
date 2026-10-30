@@ -3,6 +3,7 @@
 // and every component asking for the same key shares one cache entry.
 export const queryKeys = {
   weather: (city) => ['weather', normalizeCity(city)],
+  citySuggestions: (query) => ['city-suggestions', normalizeCity(query)],
   // weather: (city) => ['weather', city.trim().replace(/\s+/g, ' ')],
   savedCities: ['saved-cities'],
 };

@@ -27,6 +27,7 @@ const TARGET_HOURS = ['06', '09', '12', '15', '18', '21'];
 export default function WeatherSection() {
   const { city } = useParams();
   const navigate = useNavigate();
+  const { data: savedCities = [] } = useSavedCities();
   // isPending: nothing cached yet. isFetching: any request in flight,
   // including a background refresh of cached data.
   const { data: forecast, isPending, isError, error, isFetching, refetch } = useWeather(city);
@@ -36,7 +37,7 @@ export default function WeatherSection() {
       {isPending && <LoadingPage />}
       <div className="page-heading weather-heading">
         <h1>Weather</h1>
-        <InputSection onSubmit={(name) => navigate(`/weather/${encodeURIComponent(name)}`)} />
+        <InputSection savedCities={savedCities} includeSavedSuggestions onSubmit={(name) => navigate(`/weather/${encodeURIComponent(name)}`)} />
       </div>
       {isError && <QueryError error={error} onRetry={() => refetch()} />}
       {forecast && (
